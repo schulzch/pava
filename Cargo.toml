@@ -15,3 +15,7 @@ license = "Apache-2.0"
 description = """
 An implementation of the Pool-Adjacent-Violators-Algorithm (PAVA) for isotonic regression.
 """
+
+[dev-dependencies]
+rand = "0.5"
+svg = "0.5"
