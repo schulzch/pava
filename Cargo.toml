@@ -1,0 +1,17 @@
+[package]
+name = "pava"
+version = "0.1.0"
+authors = ["Christoph Schulz <schulzcbs@gmail.com>"]
+edition = "2018"
+homepage = "https://github.com/schulzch/pava"
+repository = "https://github.com/schulzch/pava"
+readme = "README.md"
+keywords = [
+    "pool-adjacent-violator",
+    "regression"
+]
+categories = ["algorithms"]
+license = "Apache-2.0"
+description = """
+An implementation of the Pool-Adjacent-Violators-Algorithm (PAVA) for isotonic regression.
+"""
