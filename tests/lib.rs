@@ -78,13 +78,13 @@ where
 #[test]
 fn increasing() {
     let (values, weights) = noisy_line(|i, _| i);
-    let res = pava::pava(&values, &weights, std::cmp::Ordering::Greater);
+    let res = pava::Regression::new(&values, &weights, std::cmp::Ordering::Greater);
     dump_svg("increasing", &values, &res.values);
 }
 
 #[test]
 fn decreasing() {
     let (values, weights) = noisy_line(|i, n| n - i);
-    let res = pava::pava(&values, &weights, std::cmp::Ordering::Less);
+    let res = pava::Regression::new(&values, &weights, std::cmp::Ordering::Less);
     dump_svg("decreasing", &values, &res.values);
 }

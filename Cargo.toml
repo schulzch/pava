@@ -14,7 +14,7 @@ keywords = [
 categories = ["algorithms"]
 license = "Apache-2.0"
 description = """
-An implementation of the Pool-Adjacent-Violators algorithm for isotonic regression.
+An implementation of the Pool-Adjacent-Violators algorithm (PAVA) for isotonic regression.
 """
 
 [dev-dependencies]
