@@ -1,6 +1,6 @@
 # PAVA
 
-An implementation of the Pool-Adjacent-Violators algorithm [2] for isotonic regression [1].
+An implementation of the Pool-Adjacent-Violators algorithm (PAVA) [2] for isotonic regression [1].
 
 ![Example](https://github.com/schulzch/pava/raw/master/doc/example.svg?sanitize=true)
 
