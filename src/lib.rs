@@ -8,7 +8,7 @@ pub struct Regression {
     pub values: Vec<f64>,
 }
 
-/// Performs isotonic regression using the Pool-Adjacent-Violators-Algorithm (PAVA).
+/// Performs isotonic regression using the Pool-Adjacent-Violators algorithm (PAVA).
 ///
 /// The algorithm minimizes $$\sum_{i=1}^{n} w_{i}(\hat{x}_i - x_i)^2$$ so that
 /// $$\hat{x}_i \leq \hat{x}_{i+1}$$, or respectively $$\hat{x}_i \geq \hat{x}_{i+1}$$.

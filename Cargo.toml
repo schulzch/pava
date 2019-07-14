@@ -8,12 +8,13 @@ repository = "https://github.com/schulzch/pava"
 readme = "README.md"
 keywords = [
     "pool-adjacent-violator",
+    "isotonic",
     "regression"
 ]
 categories = ["algorithms"]
 license = "Apache-2.0"
 description = """
-An implementation of the Pool-Adjacent-Violators-Algorithm (PAVA) for isotonic regression.
+An implementation of the Pool-Adjacent-Violators algorithm for isotonic regression.
 """
 
 [dev-dependencies]
