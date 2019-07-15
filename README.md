@@ -6,7 +6,7 @@ An implementation of the Pool-Adjacent-Violators algorithm (PAVA) [2] for isoton
 
 ## References
 
-[1] Barlow, R.E., D.J. Bartholomew, J.M. Brernner and H.D. Brunk. "Statistical Inference under Order Restrictions". Wiley, 1972.
+[1] Barlow, R.E., D.J. Bartholomew, J.M. Bremner and H.D. Brunk. "Statistical Inference under Order Restrictions". Wiley, 1972.
 [2] M. Martin Diaz and B. Salvador González, "The validity of the "Pool-Adjacent-Violator" algorithm". Stat. Probab. Lett., vol. 6, no. 3, pp. 143–145, 1988.
 
 ## License
