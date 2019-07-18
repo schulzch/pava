@@ -4,7 +4,7 @@ extern crate svg;
 
 use rand::{Rng, SeedableRng, StdRng};
 use std::f64;
-use svg::node::element::Circle;
+use svg::node::element::{Circle, Line};
 use svg::Document;
 
 fn dump_svg(name: &str, values_in: &[f64], values_out: &[f64]) {
@@ -41,19 +41,26 @@ fn dump_svg(name: &str, values_in: &[f64], values_out: &[f64]) {
             (max_y - min_y) + 2.0 * margin,
         ),
     );
-    for (x, &y) in values_in.iter().enumerate() {
+    for (x, &y) in values_out.iter().enumerate() {
+        let line = Line::new()
+            .set("stroke", "#fb8072")
+            .set("stroke-width", "0.1")
+            .set("x1", x as f64)
+            .set("y1", max_y - y as f64)
+            .set("x2", x as f64)
+            .set("y2", max_y - values_in[x] as f64);
+        doc = doc.add(line);
         let circle = Circle::new()
-            .set("fill", "black")
-            .set("r", 0.2)
+            .set("fill", "#fb8072")
+            .set("r", "0.4")
             .set("cx", x as f64)
             .set("cy", max_y - y);
         doc = doc.add(circle);
     }
-    for (x, &y) in values_out.iter().enumerate() {
+    for (x, &y) in values_in.iter().enumerate() {
         let circle = Circle::new()
-            .set("fill", "red")
-            .set("fill-opacity", "0.5")
-            .set("r", 0.4)
+            .set("fill", "black")
+            .set("r", 0.2)
             .set("cx", x as f64)
             .set("cy", max_y - y);
         doc = doc.add(circle);
@@ -78,13 +85,45 @@ where
 #[test]
 fn increasing() {
     let (values, weights) = noisy_line(|i, _| i);
-    let res = pava::Regression::new(&values, &weights, std::cmp::Ordering::Greater);
+    let res = pava::Regression::new(&values, &weights, pava::Ordering::Increasing);
     dump_svg("increasing", &values, &res.values);
 }
 
 #[test]
 fn decreasing() {
     let (values, weights) = noisy_line(|i, n| n - i);
-    let res = pava::Regression::new(&values, &weights, std::cmp::Ordering::Less);
+    let res = pava::Regression::new(&values, &weights, pava::Ordering::Decreasing);
     dump_svg("decreasing", &values, &res.values);
+}
+
+#[test]
+fn radial_decreasing() {
+    let (mut values_a, mut weights_a) = noisy_line(|i, _| i);
+    let (mut values_b, mut weights_b) = noisy_line(|i, n| n - i);
+    let center_index = values_a.len();
+    values_a.append(&mut values_b);
+    weights_a.append(&mut weights_b);
+    let res = pava::Regression::new_radial(
+        &values_a,
+        &weights_a,
+        center_index,
+        pava::Ordering::Decreasing,
+    );
+    dump_svg("radial_decreasing", &values_a, &res.values);
+}
+
+#[test]
+fn radial_increasing() {
+    let (mut values_a, mut weights_a) = noisy_line(|i, n| n - i);
+    let (mut values_b, mut weights_b) = noisy_line(|i, _| i);
+    let center_index = values_a.len();
+    values_a.append(&mut values_b);
+    weights_a.append(&mut weights_b);
+    let res = pava::Regression::new_radial(
+        &values_a,
+        &weights_a,
+        center_index,
+        pava::Ordering::Increasing,
+    );
+    dump_svg("radial_increasing", &values_a, &res.values);
 }

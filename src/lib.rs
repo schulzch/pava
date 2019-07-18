@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::ops::Not;
 
 /// Isotonic regression result.
 pub struct Regression {
@@ -8,16 +8,44 @@ pub struct Regression {
     pub values: Vec<f64>,
 }
 
-/// Performs isotonic regression using the Pool-Adjacent-Violators algorithm (PAVA).
+/// An ordering for `Regression`.
+#[derive(Clone, Copy, Debug)]
+pub enum Ordering {
+    Increasing,
+    Decreasing,
+}
+
+impl Not for Ordering {
+    type Output = Ordering;
+
+    fn not(self) -> Self::Output {
+        match self {
+            Ordering::Increasing => Ordering::Decreasing,
+            Ordering::Decreasing => Ordering::Increasing,
+        }
+    }
+}
+
+impl Into<std::cmp::Ordering> for Ordering {
+    fn into(self) -> std::cmp::Ordering {
+        match self {
+            Ordering::Increasing => std::cmp::Ordering::Greater,
+            Ordering::Decreasing => std::cmp::Ordering::Less,
+        }
+    }
+}
+
+/// Isotonic regression using the Pool-Adjacent-Violators algorithm (PAVA).
 ///
 /// <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_CHTML"></script>
+///
 /// The algorithm minimizes $$ \sum_{i}w_{i}(\hat{x}_i - x_i)^2 $$ while
-/// ensuring that \( \hat{x}_i \leq \hat{x}_{i+1} \) (ascending order), or
-/// \( \hat{x}_i \geq \hat{x}_{i+1} \) (descending order).
-/// The result is only vaild if \( w_{i} \ge 0 \).
+/// ensuring the specified order. The result is only vaild if \( w_{i} \ge 0 \).
 impl Regression {
+    /// Isotonic regression to establish an axis-aligned increasing order
+    /// ( \( \hat{x}_i \leq \hat{x}_{i+1} \) ), or decreasing order
+    /// ( \( \hat{x}_i \geq \hat{x}_{i+1} \) ).
     pub fn new(values: &[f64], weights: &[f64], ordering: Ordering) -> Self {
-        assert!(ordering != Ordering::Equal, "Requires a total order");
         assert!(
             values.len() == weights.len(),
             "Values and weights must be equal-sized"
@@ -36,7 +64,7 @@ impl Regression {
             j += 1;
             x[j] = values[i];
             w[j] = weights[i];
-            while (j > 0) && x[j - 1].partial_cmp(&x[j]).unwrap() == ordering {
+            while (j > 0) && x[j - 1].partial_cmp(&x[j]).unwrap() == ordering.into() {
                 x[j - 1] = (w[j] * x[j] + w[j - 1] * x[j - 1]) / (w[j] + w[j - 1]);
                 w[j - 1] += w[j];
                 j -= 1;
@@ -60,5 +88,20 @@ impl Regression {
             weights: ww,
             values: xx,
         }
+    }
+
+    /// Isotonic regression to establish a radial-center-outward (increasing) order, or
+    /// a radial-center-inward (decreasing) order.
+    pub fn new_radial(
+        values: &[f64],
+        weights: &[f64],
+        center_index: usize,
+        ordering: Ordering,
+    ) -> Self {
+        let mut a = Self::new(&values[..center_index], &weights[..center_index], !ordering);
+        let mut b = Self::new(&values[center_index..], &weights[center_index..], ordering);
+        a.weights.append(&mut b.weights);
+        a.values.append(&mut b.values);
+        a
     }
 }
