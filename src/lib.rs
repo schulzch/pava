@@ -37,14 +37,16 @@ impl Into<std::cmp::Ordering> for Ordering {
 
 /// Isotonic regression using the Pool-Adjacent-Violators algorithm (PAVA).
 ///
-/// <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_CHTML"></script>
+/// For any input $x \in \mathbb{R}$ with weights $w_{i} \in \mathbb{R}^+$, the algorithm 
+/// minimizes the following equation, while establishing monotonicty:
 ///
-/// The algorithm minimizes $$ \sum_{i}w_{i}(\hat{x}_i - x_i)^2 $$ while
-/// ensuring the specified order. The result is only vaild if \( w_{i} \ge 0 \).
+/// $$
+/// \sum_{i}w\_{i}(\hat{x}\_i - x_i)^2 , \\; \hat{x}\_i \lessgtr \hat{x}\_{i+1}
+/// $$
+///
 impl Regression {
-    /// Isotonic regression to establish an axis-aligned increasing order
-    /// ( \( \hat{x}_i \leq \hat{x}_{i+1} \) ), or decreasing order
-    /// ( \( \hat{x}_i \geq \hat{x}_{i+1} \) ).
+    /// Axis-aligned isotonic regression to establish a left-to-right order
+    /// (increasing) or right-to-left order (decreasing).
     pub fn new(values: &[f64], weights: &[f64], ordering: Ordering) -> Self {
         assert!(
             values.len() == weights.len(),
@@ -90,8 +92,8 @@ impl Regression {
         }
     }
 
-    /// Isotonic regression to establish a radial-center-outward (increasing) order, or
-    /// a radial-center-inward (decreasing) order.
+    /// Isotonic regression to establish a radial-center-outward order (increasing), or
+    /// a radial-center-inward order (decreasing).
     pub fn new_radial(
         values: &[f64],
         weights: &[f64],

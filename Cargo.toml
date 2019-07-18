@@ -20,3 +20,6 @@ An implementation of the Pool-Adjacent-Violators algorithm (PAVA) for isotonic r
 [dev-dependencies]
 rand = "0.5"
 svg = "0.5"
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--html-in-header", "doc/header.html"]
